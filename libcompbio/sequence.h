@@ -1,7 +1,10 @@
-#include <string>
-
 #ifndef COMPBIO_SEQUENCE_H
 #define COMPBIO_SEQUENCE_H
+
+#include <string>
+#include "alphabet.h" 
+
+namespace compbio {
 
 class Sequence : std::string {
     private:
@@ -17,13 +20,17 @@ class Sequence : std::string {
         Sequence(const char* seq, const Alphabet& alphabet);
         Sequence(const std::string& seq, const Alphabet& alphabet);
 
-        // Copy constructor
+        // Copying and moving
         Sequence(const Sequence& other);
+        Sequence(Sequence&& other);
 
-        
+        Sequence complement();
+        Sequence reverse_complement();
 
         // Destructor
         virtual ~Sequence();
 };
+
+}
 
 #endif
