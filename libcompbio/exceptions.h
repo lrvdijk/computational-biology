@@ -16,4 +16,10 @@ class AlphabetException : public std::runtime_error
         AlphabetException(const std::string& message) : std::runtime_error(message) { }
 };
 
+class SequenceException : public std::runtime_error 
+{
+    public:
+        SequenceException(const std::string& message) : std::runtime_error(message) { }
+};
+
 #endif
