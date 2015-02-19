@@ -26,6 +26,8 @@ class Alphabet {
         Alphabet(const Alphabet& other);
         Alphabet(Alphabet&& other);
 
+        virtual const std::string& getLetters() const;
+        virtual const std::string& getComplements() const;
         virtual char complement(char letter) const;
         void setCostFunction(function<int(char a, char b)>& cost_function);
 

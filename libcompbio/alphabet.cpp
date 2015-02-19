@@ -37,7 +37,17 @@ Alphabet::Alphabet(Alphabet&& other) : letters(std::move(other.letters)),
 {
 }
 
-char Alphabet::complement(char letter)
+const string& Alphabet::getLetters() const 
+{
+    return this->letters;
+}
+
+const string& Alphabet::getComplements() const
+{
+    return this->complements;
+}
+
+char Alphabet::complement(char letter) const
 {
     size_t index = this->letters.find(letter);
 
