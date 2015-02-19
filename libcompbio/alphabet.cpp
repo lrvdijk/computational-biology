@@ -1,10 +1,9 @@
 #include <utility>
 
 #include "exceptions.h"
+#include "utils.h"
 #include "alphabet.h"
 
-using std::string;
-using std::function;
 using namespace compbio;
 
 Alphabet::Alphabet(const string& letters, const string& complements) :
@@ -44,7 +43,8 @@ char Alphabet::complement(char letter)
 
     if(index == string::npos)
     {
-        throw AlphabetException("Letter " + letter + " not part of the alphabet.");
+        throw AlphabetException(string_format("Letter %c not part of the alphabet.",
+            letter));
     }
 
     return this->complements[index];
