@@ -1,31 +1,23 @@
 #ifndef COMPBIO_ALIGNMENT_H
 #define COMPBIO_ALIGNMENT_H
 
-#include <memory>
+#include <functional>
 #include <string>
 #include <tuple>
-#include "sequence.h"
 
 namespace compbio {
 
+typedef std::function<int(char a, char b)> cost_function_t;
+
 class Aligner {
+    protected:
+        cost_function_t cost_function;
+
     public:
         virtual std::tuple<std::string, std::string> align() = 0;
-};
 
-class HirschbergAlignment : public Aligner {
-    private:
-        Sequence& seq1;
-        Sequence& seq2;
-
-    public:
-        HirschbergAlignment(Sequence& seq1, Sequence& seq2);
-
-        virtual std::tuple<std::string, std::string> align();
-
-    protected:
-        std::unique_ptr<int> forward_matrix();
-        std::unique_ptr<int> backward_matrix();
+        virtual cost_function_t& getCostFunction();
+        virtual void setCostFunction(cost_function_t& cost_function);
 };
 
 }
