@@ -5,6 +5,8 @@ project(Computational-Biology)
 add_library(compbio
     libcompbio/alphabet.cpp
     libcompbio/alphabets/dna.cpp
+    libcompbio/alignment/base.cpp
+    libcompbio/alignment/hirschberg.cpp
     libcompbio/utils.cpp
     libcompbio/sequence.cpp
 )
@@ -13,8 +15,7 @@ target_compile_features(compbio PRIVATE
     cxx_lambdas 
     cxx_nullptr 
     cxx_rvalue_references
-    cxx_inheriting_constructors
-    cxx_return_type_deduction
+    cxx_range_for
 )
 
 add_executable(local-alignment
@@ -26,6 +27,5 @@ target_compile_features(local-alignment PRIVATE
     cxx_lambdas 
     cxx_nullptr 
     cxx_rvalue_references
-    cxx_inheriting_constructors
-    cxx_return_type_deduction
+    cxx_range_for
 )
