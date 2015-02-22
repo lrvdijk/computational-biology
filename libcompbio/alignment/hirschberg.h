@@ -20,8 +20,8 @@ class HirschbergAlignment : public Aligner {
         virtual std::tuple<std::string, std::string> align();
 
     protected:
-        std::unique_ptr<int[]> forward_matrix();
-        std::unique_ptr<int[]> backward_matrix();
+        std::tuple<std::unique_ptr<int[]>, std::unique_ptr<int[]> > initialize_conditions(bool reverse);
+        std::unique_ptr<int[]> compute_matrix(int* max_score, bool reverse);
 };
 
 }
