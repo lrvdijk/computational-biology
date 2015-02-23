@@ -28,6 +28,9 @@ class HirschbergAlignment : public Aligner {
         std::unique_ptr<int[]> compute_matrix(int* max_score, bool reverse);
         std::unique_ptr<int[]> compute_matrix(bool reverse);
         std::tuple<int, int, int> compute_scores(int col, char a, char b);
+        std::unique_ptr<int[]> finish_row(int row);
+        bool isHalfRow(int row);
+
 };
 
 }

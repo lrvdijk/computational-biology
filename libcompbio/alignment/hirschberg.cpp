@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include <algorithm>
 #include <sstream>
 #include <boost/range/adaptor/reversed.hpp>
@@ -26,12 +27,13 @@ unique_ptr<int[]> HirschbergAlignment::initialize_conditions(bool reverse=false)
     if(reverse) {
         initial_row[0] = 0;
         for(Sequence::size_type i = this->seq1.size(); i > 0; --i) {
-            initial_row[i] = initial_row[i-1] + this->cost_function(this->seq1[i-1], '-');
+            int col = this->seq1.size() - i + 1;
+            initial_row[col] = initial_row[col-1] + this->cost_function(this->seq1[i-1], '-');
         }
     } else {
         // Initial conditions
         initial_row[0] = 0;
-        for(Sequence::size_type i = 0; i <= this->seq1.size(); ++i) {
+        for(Sequence::size_type i = 1; i <= this->seq1.size(); ++i) {
             initial_row[i] = initial_row[i-1] + this->cost_function(this->seq1[i-1], '-');
         }
     }
@@ -46,7 +48,6 @@ unique_ptr<int[]> HirschbergAlignment::compute_matrix(int* max_score=nullptr, bo
     
     // Memory for the row we will be computing on
     this->current_row = unique_ptr<int[]>(new int[this->seq1.size() + 1]);
-    this->current_row[0] = 0;
 
     // We need to store the values of row number `this->seq2.size()/2`
     unique_ptr<int[]> half_row(new int[this->seq1.size() + 1]);
@@ -55,8 +56,21 @@ unique_ptr<int[]> HirschbergAlignment::compute_matrix(int* max_score=nullptr, bo
     if(reverse) {
         int row = 0;
         std::cout << "Backward matrix" << std::endl;
+        std::cout << "     ";
+        for(char elem : adaptors::reverse(this->seq1)) {
+            std::cout << std::setw(2) << elem << " ";
+        }
+        std::cout << std::endl;
+        std::cout << "  ";
+        for(Sequence::size_type i = 0; i <= this->seq1.size(); ++i) {
+            std::cout << std::setw(2) << this->previous_row[i] << " ";
+        }
+        std::cout << std::endl;
         for(char elem2 : adaptors::reverse(this->seq2)) {
             int col = 1;
+            
+            // Prepare initial conditions
+            this->current_row[0] = this->previous_row[0] + this->cost_function('-', elem2);
 
             for(char elem1 : adaptors::reverse(this->seq1)) {
                 int score1, score2, score3;
@@ -66,35 +80,33 @@ unique_ptr<int[]> HirschbergAlignment::compute_matrix(int* max_score=nullptr, bo
                 ++col;
             }
             
-            // We're finished with a row
-            // Swap previous and current row
-            std::swap(this->current_row, this->previous_row);
-
-            // Make sure initial conditions are maintained.
-            this->current_row[0] = this->previous_row[0] + this->cost_function('-', elem2);
-
-            // If we have processed the 'half-row' we copy the contents to some
-            // separate memory. We add plus one because we also need to take the
-            // initial row into account.
-            if(row == (this->seq2.size() + 1)/2) {
-                for(Sequence::size_type i = 0; i <= this->seq1.size(); ++i) {
-                    half_row[i] = this->previous_row[i];
-                }
+            std::cout << elem2 << " ";
+            if(this->isHalfRow(row)) {
+                half_row = this->finish_row(row);
+            } else {
+                this->finish_row(row);
             }
-
-            for(Sequence::size_type i = 0; i <= this->seq1.size(); ++i) {
-                std::cout << this->previous_row[i] << " ";
-            }
-
-            std::cout << std::endl;
 
             ++row;
         }
     } else {
         int row = 0;
         std::cout << "Forward matrix" << std::endl;
+        std::cout << "     ";
+        for(char elem : this->seq1) {
+            std::cout << std::setw(2) << elem << " ";
+        }
+        std::cout << std::endl;
+        std::cout << "  ";
+        for(Sequence::size_type i = 0; i <= this->seq1.size(); ++i) {
+            std::cout << std::setw(2) << this->previous_row[i] << " ";
+        }
+        std::cout << std::endl;
         for(char elem2 : this->seq2) {
             int col = 1;
+
+            // Prepare initial conditions
+            this->current_row[0] = this->previous_row[0] + this->cost_function('-', elem2);
 
             for(char elem1 : this->seq1) {
                 int score1, score2, score3;
@@ -104,27 +116,12 @@ unique_ptr<int[]> HirschbergAlignment::compute_matrix(int* max_score=nullptr, bo
                 ++col;
             }
             
-            // We're finished with a row
-            // Swap previous and current row
-            std::swap(this->current_row, this->previous_row);
-
-            // Make sure initial conditions are maintained.
-            this->current_row[0] = this->previous_row[0] + this->cost_function('-', elem2);
-            
-            // If we have processed the 'half-row' we copy the contents to some
-            // separate memory. We add plus one because we also need to take the
-            // initial row into account.
-            if(row == (this->seq2.size() + 1)/2) {
-                for(Sequence::size_type i = 0; i <= this->seq1.size(); ++i) {
-                    half_row[i] = this->previous_row[i];
-                }
+            std::cout << elem2 << " ";
+            if(this->isHalfRow(row)) {
+                half_row = this->finish_row(row);
+            } else {
+                this->finish_row(row);
             }
-
-            for(Sequence::size_type i = 0; i <= this->seq1.size(); ++i) {
-                std::cout << this->previous_row[i] << " ";
-            }
-
-            std::cout << std::endl;
 
             ++row;
         }
@@ -141,6 +138,38 @@ unique_ptr<int[]> HirschbergAlignment::compute_matrix(int* max_score=nullptr, bo
 unique_ptr<int[]> HirschbergAlignment::compute_matrix(bool reverse=false)
 {
     return this->compute_matrix(nullptr, reverse);
+}
+
+unique_ptr<int[]> HirschbergAlignment::finish_row(int row)
+{
+    // We're finished with a row
+    // Swap previous and current row
+    std::swap(this->current_row, this->previous_row);
+
+    for(Sequence::size_type i = 0; i <= this->seq1.size(); ++i) {
+        std::cout << std::setw(2) << this->previous_row[i] << " ";
+    }
+    std::cout << std::endl;
+
+    
+    // If we have processed the 'half-row' we copy the contents to some
+    // separate memory, and return it
+    if(this->isHalfRow(row)) {
+        std::cout << "----------------" << std::endl;
+        unique_ptr<int[]> half_row(new int[this->seq1.size() + 1]);
+        for(Sequence::size_type i = 0; i <= this->seq1.size(); ++i) {
+            half_row[i] = this->previous_row[i];
+        }
+
+        return half_row;
+    } else {
+        return nullptr;
+    }
+}
+
+bool HirschbergAlignment::isHalfRow(int row)
+{
+    return row+1 == (this->seq2.size())/2;
 }
 
 tuple<int, int, int> HirschbergAlignment::compute_scores(int col, char a, char b)
@@ -207,7 +236,7 @@ tuple<string, string> HirschbergAlignment::align()
             std::cout << forward_row[k] << " + " << backward_row[this->seq1.size() - k]; 
             std::cout << " = " << forward_row[k] + backward_row[this->seq1.size() -  k];
             std::cout << std::endl;
-            if(forward_row[k] + backward_row[this->seq2.size() - k] == max_score) {
+            if(forward_row[k] + backward_row[this->seq1.size() - k] == max_score) {
                 found = true;
                 break;
             }
