@@ -79,3 +79,7 @@ Sequence Sequence::reverse_complement()
     
     return *this;
 }
+
+Sequence::~Sequence()
+{
+}

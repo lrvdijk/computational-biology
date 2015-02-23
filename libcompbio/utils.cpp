@@ -5,7 +5,7 @@
 
 using namespace compbio;
 
-std::string string_format(const std::string fmt_str, ...) {
+std::string compbio::string_format(const std::string fmt_str, ...) {
     int final_n, n = ((int)fmt_str.size()) * 2; /* Reserve two times as much as the length of the fmt_str */
     std::string str;
     std::unique_ptr<char[]> formatted;
@@ -24,7 +24,7 @@ std::string string_format(const std::string fmt_str, ...) {
     return std::string(formatted.get());
 }
 
-std::default_random_engine& prng_engine()
+std::default_random_engine& compbio::prng_engine()
 {
     thread_local static std::random_device rd{};
     thread_local static std::default_random_engine engine{rd()};

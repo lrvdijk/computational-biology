@@ -2,12 +2,11 @@
 
 using namespace compbio;
 
-cost_function_t& Aligner::getCostFunction()
+Aligner::Aligner(const cost_function_t& cost_func) : cost_function(cost_func)
 {
-    return this->cost_function;
 }
 
-void Aligner::setCostFunction(cost_function_t& func)
+const cost_function_t& Aligner::getCostFunction() const
 {
-    this->cost_function = func;
+    return this->cost_function;
 }

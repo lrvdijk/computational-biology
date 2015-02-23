@@ -8,7 +8,7 @@ namespace compbio {
 
 std::string string_format(const std::string fmt_str, ...);
 
-std::default_random_engine prng_engine();
+std::default_random_engine& prng_engine();
 
 }
 
