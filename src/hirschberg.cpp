@@ -7,8 +7,8 @@ using namespace compbio;
 
 int main()
 {
-    Sequence seq1("AGTACGCA");
-    Sequence seq2("TATGC");
+    Sequence seq1("ABBC");
+    Sequence seq2("CBBA");
 
     HirschbergAlignment aligner(seq1, seq2, [] (char a, char b) {
         if(a == b) {
@@ -18,7 +18,7 @@ int main()
         } else if(b == '-') {
             return -1;
         } else {
-            return 0;
+            return -1;
         }
     });
 

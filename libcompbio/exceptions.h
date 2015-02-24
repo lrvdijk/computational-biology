@@ -22,4 +22,10 @@ class SequenceException : public std::runtime_error
         SequenceException(const std::string& message) : std::runtime_error(message) { }
 };
 
+class AlignException : public std::runtime_error
+{
+    public:
+        AlignException(const std::string& message) : std::runtime_error(message) { }
+};
+
 #endif
