@@ -94,11 +94,13 @@ vector<int> HirschbergAlignment::compute_matrix(int* max_score=nullptr, bool rev
                 ++col;
             }
             
-            std::cout << this->prefix() << elem2 << " ";
+            std::cout << this->prefix() << elem2;
             if(this->isHalfRow(row)) {
-                half_row = this->finish_row(row);
+                std::cout << "-";
+                half_row = this->finish_row();
             } else {
-                this->finish_row(row);
+                std::cout << " ";
+                this->finish_row();
             }
 
             ++row;
@@ -130,11 +132,13 @@ vector<int> HirschbergAlignment::compute_matrix(int* max_score=nullptr, bool rev
                 ++col;
             }
             
-            std::cout << this->prefix() << elem2 << " ";
+            std::cout << this->prefix() << elem2;
             if(this->isHalfRow(row)) {
-                half_row = this->finish_row(row);
+                std::cout << "-";
+                half_row = this->finish_row();
             } else {
-                this->finish_row(row);
+                std::cout << " ";
+                this->finish_row();
             }
 
             ++row;
@@ -153,7 +157,7 @@ vector<int> HirschbergAlignment::compute_matrix(bool reverse=false)
     return this->compute_matrix(nullptr, reverse);
 }
 
-vector<int> HirschbergAlignment::finish_row(int row)
+vector<int> HirschbergAlignment::finish_row()
 {
     // We're finished with a row
     // Swap previous and current row
@@ -163,9 +167,6 @@ vector<int> HirschbergAlignment::finish_row(int row)
         std::cout << std::setw(2) << elem << " ";
     }
 
-    if(this->isHalfRow(row)) {
-        std::cout << " <-";
-    }
     std::cout << std::endl;
     
     return vector<int>(this->previous_row);
@@ -173,7 +174,7 @@ vector<int> HirschbergAlignment::finish_row(int row)
 
 bool HirschbergAlignment::isHalfRow(int row)
 {
-    int half_row = (this->seq2.size()/2) - 1;
+    int half_row = ((this->seq2.size()-1)/2);
     return row == std::max(0, half_row);
 }
 
@@ -232,15 +233,16 @@ tuple<string, string> HirschbergAlignment::align()
         auto forward_row = this->compute_matrix(&max_score);
         auto backward_row = this->compute_matrix(true);
 
+        std::cout << this->prefix() << "Max score: " << max_score << std::endl;
+
         // Find the column where we're going to split
         // (and where the forward and backward matrix meet)
-        
         int k = -1;
         for(Sequence::size_type i = 0; i < this->seq1.size(); ++i) {
-            std::cout << this->prefix() << forward_row[i+1] << " + " << backward_row[this->seq1.size() - i];
-            std::cout << " = " << forward_row[i+1] + backward_row[this->seq1.size() - i];
+            std::cout << this->prefix() << forward_row[i] << " + " << backward_row[this->seq1.size() - i];
+            std::cout << " = " << forward_row[i] + backward_row[this->seq1.size() - i];
             std::cout << std::endl;
-            if(forward_row[i+1] + backward_row[this->seq1.size() - i] == max_score) {
+            if(forward_row[i] + backward_row[this->seq1.size() - i] == max_score) {
                 k = i;
             }
         }
