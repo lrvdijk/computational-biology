@@ -11,33 +11,23 @@
 namespace compbio {
 
 class HirschbergAlignment : public Aligner {
-    private:
-        int depth;
-
-        Sequence& seq1;
-        Sequence& seq2;
-
-        std::vector<int> previous_row;
-        std::vector<int> current_row;
-
-        inline std::string prefix();
-
     public:
-        HirschbergAlignment(Sequence& seq1, Sequence& seq2,
+        HirschbergAlignment(const Sequence& seq1, const Sequence& seq2,
             const cost_function_t& cost_func);
-        HirschbergAlignment(Sequence& seq1, Sequence& seq2,
-            const cost_function_t& cost_func, int depth);
+        virtual ~HirschbergAlignment() { }
 
         virtual std::tuple<std::string, std::string> align();
 
     protected:
-        std::vector<int> initialize_conditions(bool reverse);
-        std::vector<int> compute_matrix(int* max_score, bool reverse);
-        std::vector<int> compute_matrix(bool reverse);
-        std::tuple<int, int, int> compute_scores(int col, char a, char b);
-        std::vector<int> finish_row();
-        bool isHalfRow(int row);
+        template<typename iter>
+        std::tuple<std::string, std::string> compute(iter seq1_l, iter seq1_h, 
+            iter seq2_l, iter seq2_h, int depth);
 
+        template<typename iter>
+        std::vector<int> computeMatrix(iter seq1_l, iter seq1_h, iter seq2_l, iter seq2_h);
+
+        template<typename iter>
+        std::vector<int> initialConditions(iter seq1_l, iter seq1_h);
 };
 
 }

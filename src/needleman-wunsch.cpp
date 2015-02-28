@@ -1,7 +1,7 @@
 #include <tuple>
 #include <string>
 #include <iostream>
-#include <libcompbio/alignment/hirschberg.h>
+#include <libcompbio/alignment/needleman-wunsch.h>
 
 using namespace compbio;
 
@@ -12,7 +12,7 @@ int main()
     //Sequence seq1("AGTACGCA");
     //Sequence seq2("TATGC");
 
-    HirschbergAlignment aligner(seq1, seq2, [] (char a, char b) {
+    NeedlemanWunsch aligner(seq1, seq2, [] (char a, char b) {
         if(a == b) {
             return 2;
         } else if(a == '-') {
@@ -33,5 +33,6 @@ int main()
     
     return 0;
 }
+
 
 

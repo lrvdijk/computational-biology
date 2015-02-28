@@ -1,7 +1,12 @@
 #ifndef COMPBIO_SEQUENCE_H
 #define COMPBIO_SEQUENCE_H
 
+#include <utility>
+#include <random>
+#include <algorithm>
 #include <string>
+
+#include "utils.h"
 #include "alphabet.h" 
 
 namespace compbio {
@@ -28,7 +33,8 @@ class Sequence : public std::string {
         Sequence(Sequence&& other);
 
         // Generate a random sequence from a given alphabet
-        static Sequence random(size_t length, const Alphabet& alphabet);
+        template<Alphabet& alphabet>
+        static Sequence random(size_t length);
 
         // Retrieve sequence complements
         Sequence complement();
@@ -37,6 +43,22 @@ class Sequence : public std::string {
         // Destructor
         virtual ~Sequence();
 };
+
+template<Alphabet& chars>
+Sequence Sequence::random(size_t length)
+{
+    auto letters = chars.getLetters();
+    static std::uniform_int_distribution<> dist(0, letters.size()-1);
+    
+    Sequence new_sequence(length, 0, chars);
+    std::generate_n(new_sequence.begin(), length, [&letters] () -> char {
+        auto engine = prng_engine();
+        return letters[dist(engine)];
+    });
+
+    return new_sequence;
+}
+
 
 }
 

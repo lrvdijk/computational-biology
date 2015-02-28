@@ -1,8 +1,3 @@
-#include <utility>
-#include <random>
-#include <algorithm>
-
-#include "utils.h"
 #include "sequence.h"
 #include "alphabets/dna.h"
 
@@ -53,19 +48,6 @@ void Sequence::validate_sequence()
     // TODO
 }
 
-Sequence Sequence::random(size_t length, const Alphabet& alphabet)
-{
-    std::uniform_int_distribution<> dist(0, alphabet.getLetters().size()-1);
-    
-    Sequence new_sequence(length, 0, alphabet);
-    std::generate_n(new_sequence.begin(), length, [&alphabet,&dist] () {
-        auto engine = prng_engine();
-        return alphabet.getLetters()[dist(engine)];
-    });
-
-    return new_sequence;
-}
-    
 Sequence Sequence::complement()
 {
     // TODO
