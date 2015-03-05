@@ -7,8 +7,8 @@ using namespace compbio;
 
 int main()
 {
-    Sequence seq1("CATGT");
-    Sequence seq2("ACGCTG");
+    Sequence seq1("ACACACTA");
+    Sequence seq2("AGCACACA");
     //Sequence seq1("AGTACGCA");
     //Sequence seq2("TATGC");
 

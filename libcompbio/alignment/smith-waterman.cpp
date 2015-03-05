@@ -76,10 +76,7 @@ tuple<string, string> SmithWaterman::align()
     std::reverse(align1.begin(), align1.end());
     std::reverse(align2.begin(), align2.end());
 
-    // Part 2: Align these local suffix alignments
-    NeedlemanWunsch aligner(align1, align2, this->cost_function);
-
-    return aligner.align();
+    return std::make_tuple(align1, align2);
 }
 
 
